@@ -32,7 +32,6 @@ import 'package:flutter_credit_card/flutter_credit_card.dart';
     CreditCardWidget(
         cardNumber: cardNumber,
         expiryDate: expiryDate, 
-        cardHolderName: cardHolderName,
         cvvCode: cvvCode,
         showBackView: isCvvFocused, //true when you want to show cvv(back) view
     ),
@@ -42,7 +41,6 @@ import 'package:flutter_credit_card/flutter_credit_card.dart';
     CreditCardWidget(
         cardNumber: cardNumber,
         expiryDate: expiryDate,
-        cardHolderName: cardHolderName,
         cvvCode: cvvCode,
         showBackView: isCvvFocused,
         cardbgColor: Colors.black,
@@ -73,8 +71,7 @@ const LocalizedText localizedText = LocalizedText(
     expiryDateHint: 'MM/JJ',
     cvvLabel: 'Kartenprüfnummer',
     cvvHint: 'XXX',
-    cardHolderLabel: 'Karteninhaber',
-    cardHolderHint: 'Max Mustermann',
+
 );
 
 return Column(
@@ -82,7 +79,7 @@ return Column(
         CreditCardWidget(
             cardNumber: cardNumber,
             expiryDate: expiryDate,
-            cardHolderName: cardHolderName,
+
             cvvCode: cvvCode,
             showBackView: isCvvFocused,
             localizedText: localizedText,

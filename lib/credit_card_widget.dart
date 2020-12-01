@@ -1,7 +1,5 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-
 import 'localized_text_model.dart';
 
 class CreditCardWidget extends StatefulWidget {
@@ -9,7 +7,6 @@ class CreditCardWidget extends StatefulWidget {
     Key key,
     @required this.cardNumber,
     @required this.expiryDate,
-    @required this.cardHolderName,
     @required this.cvvCode,
     @required this.showBackView,
     this.animationDuration = const Duration(milliseconds: 500),
@@ -25,7 +22,6 @@ class CreditCardWidget extends StatefulWidget {
 
   final String cardNumber;
   final String expiryDate;
-  final String cardHolderName;
   final String cvvCode;
   final TextStyle textStyle;
   final Color cardBgColor;
@@ -39,15 +35,11 @@ class CreditCardWidget extends StatefulWidget {
   _CreditCardWidgetState createState() => _CreditCardWidgetState();
 }
 
-class _CreditCardWidgetState extends State<CreditCardWidget>
-    with SingleTickerProviderStateMixin {
+class _CreditCardWidgetState extends State<CreditCardWidget> with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> _frontRotation;
   Animation<double> _backRotation;
   Gradient backgroundGradientColor;
-
-  bool isAmex = false;
-
   @override
   void initState() {
     super.initState();
@@ -57,7 +49,6 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
       duration: widget.animationDuration,
       vsync: this,
     );
-
     backgroundGradientColor = LinearGradient(
       // Where the linear gradient begins and ends
       begin: Alignment.topRight,
@@ -76,8 +67,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
     _frontRotation = TweenSequence<double>(
       <TweenSequenceItem<double>>[
         TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 0.0, end: pi / 2)
-              .chain(CurveTween(curve: Curves.easeIn)),
+          tween: Tween<double>(begin: 0.0, end: pi / 2).chain(CurveTween(curve: Curves.easeIn)),
           weight: 50.0,
         ),
         TweenSequenceItem<double>(
@@ -86,7 +76,6 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
         ),
       ],
     ).animate(controller);
-
     _backRotation = TweenSequence<double>(
       <TweenSequenceItem<double>>[
         TweenSequenceItem<double>(
@@ -94,8 +83,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
           weight: 50.0,
         ),
         TweenSequenceItem<double>(
-          tween: Tween<double>(begin: -pi / 2, end: 0.0)
-              .chain(CurveTween(curve: Curves.easeOut)),
+          tween: Tween<double>(begin: -pi / 2, end: 0.0).chain(CurveTween(curve: Curves.easeOut)),
           weight: 50.0,
         ),
       ],
@@ -148,7 +136,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
     BuildContext context,
     Orientation orientation,
   ) {
-    final TextStyle defaultTextStyle = Theme.of(context).textTheme.title.merge(
+    final TextStyle defaultTextStyle = Theme.of(context).textTheme.headline6.merge(
           TextStyle(
             color: Colors.black,
             fontFamily: 'halter',
@@ -171,8 +159,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
       ),
       margin: const EdgeInsets.all(16),
       width: widget.width ?? width,
-      height: widget.height ??
-          (orientation == Orientation.portrait ? height / 4 : height / 2),
+      height: widget.height ?? (orientation == Orientation.portrait ? height / 4 : height / 2),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,9 +193,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
                       child: Padding(
                         padding: const EdgeInsets.all(5),
                         child: Text(
-                          widget.cvvCode.isEmpty
-                              ? isAmex ? 'XXXX' : widget.localizedText.cvvHint
-                              : widget.cvvCode,
+                          widget.cvvCode.isEmpty ? widget.localizedText.cvvHint : widget.cvvCode,
                           maxLines: 1,
                           style: widget.textStyle ?? defaultTextStyle,
                         ),
@@ -236,7 +221,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
 
   ///
   /// Builds a front container containing
-  /// Card number, Exp. year and Card holder name
+  /// Card number, Exp. year
   ///
   Container buildFrontContainer(
     double width,
@@ -244,7 +229,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
     BuildContext context,
     Orientation orientation,
   ) {
-    final TextStyle defaultTextStyle = Theme.of(context).textTheme.title.merge(
+    final TextStyle defaultTextStyle = Theme.of(context).textTheme.headline6.merge(
           TextStyle(
             color: Colors.white,
             fontFamily: 'halter',
@@ -267,8 +252,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
         gradient: backgroundGradientColor,
       ),
       width: widget.width ?? width,
-      height: widget.height ??
-          (orientation == Orientation.portrait ? height / 4 : height / 2),
+      height: widget.height ?? (orientation == Orientation.portrait ? height / 4 : height / 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -291,26 +275,12 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
             ),
           ),
           Expanded(
-            flex: 1,
             child: Padding(
               padding: const EdgeInsets.only(left: 16),
               child: Text(
                 widget.expiryDate.isEmpty || widget.expiryDate == null
                     ? widget.localizedText.expiryDateHint
                     : widget.expiryDate,
-                style: widget.textStyle ?? defaultTextStyle,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              child: Text(
-                widget.cardHolderName.isEmpty || widget.cardHolderName == null
-                    ? widget.localizedText.cardHolderLabel.toUpperCase()
-                    : widget.cardHolderName,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
                 style: widget.textStyle ?? defaultTextStyle,
               ),
             ),
@@ -323,8 +293,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
   /// Credit Card prefix patterns as of March 2019
   /// A [List<String>] represents a range.
   /// i.e. ['51', '55'] represents the range of cards starting with '51' to those starting with '55'
-  Map<CardType, Set<List<String>>> cardNumPatterns =
-      <CardType, Set<List<String>>>{
+  Map<CardType, Set<List<String>>> cardNumPatterns = <CardType, Set<List<String>>>{
     CardType.visa: <List<String>>{
       <String>['4'],
     },
@@ -353,17 +322,14 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
   CardType detectCCType(String cardNumber) {
     //Default card type is other
     CardType cardType = CardType.otherBrand;
-
     if (cardNumber.isEmpty) {
       return cardType;
     }
-
     cardNumPatterns.forEach(
       (CardType type, Set<List<String>> patterns) {
         for (List<String> patternRange in patterns) {
           // Remove any spaces
-          String ccPatternStr =
-              cardNumber.replaceAll(RegExp(r'\s+\b|\b\s'), '');
+          String ccPatternStr = cardNumber.replaceAll(RegExp(r'\s+\b|\b\s'), '');
           final int rangeLen = patternRange[0].length;
           // Trim the Credit Card number string to match the pattern prefix length
           if (rangeLen < cardNumber.length) {
@@ -394,7 +360,6 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
         }
       },
     );
-
     return cardType;
   }
 
@@ -410,17 +375,6 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
           width: 48,
           package: 'flutter_credit_card',
         );
-        isAmex = false;
-        break;
-
-      case CardType.americanExpress:
-        icon = Image.asset(
-          'icons/amex.png',
-          height: 48,
-          width: 48,
-          package: 'flutter_credit_card',
-        );
-        isAmex = true;
         break;
 
       case CardType.mastercard:
@@ -430,17 +384,6 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
           width: 48,
           package: 'flutter_credit_card',
         );
-        isAmex = false;
-        break;
-
-      case CardType.discover:
-        icon = Image.asset(
-          'icons/discover.png',
-          height: 48,
-          width: 48,
-          package: 'flutter_credit_card',
-        );
-        isAmex = false;
         break;
 
       default:
@@ -448,10 +391,8 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
           height: 48,
           width: 48,
         );
-        isAmex = false;
         break;
     }
-
     return icon;
   }
 }
@@ -534,8 +475,7 @@ class MaskedTextController extends TextEditingController {
 
   void moveCursorToEnd() {
     final String text = _lastUpdatedText;
-    selection =
-        TextSelection.fromPosition(TextPosition(offset: (text ?? '').length));
+    selection = TextSelection.fromPosition(TextPosition(offset: (text ?? '').length));
   }
 
   @override

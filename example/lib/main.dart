@@ -15,7 +15,6 @@ class MySample extends StatefulWidget {
 class MySampleState extends State<MySample> {
   String cardNumber = '';
   String expiryDate = '';
-  String cardHolderName = '';
   String cvvCode = '';
   bool isCvvFocused = false;
 
@@ -35,7 +34,6 @@ class MySampleState extends State<MySample> {
               CreditCardWidget(
                 cardNumber: cardNumber,
                 expiryDate: expiryDate,
-                cardHolderName: cardHolderName,
                 cvvCode: cvvCode,
                 showBackView: isCvvFocused,
               ),
@@ -57,7 +55,6 @@ class MySampleState extends State<MySample> {
     setState(() {
       cardNumber = creditCardModel.cardNumber;
       expiryDate = creditCardModel.expiryDate;
-      cardHolderName = creditCardModel.cardHolderName;
       cvvCode = creditCardModel.cvvCode;
       isCvvFocused = creditCardModel.isCvvFocused;
     });
