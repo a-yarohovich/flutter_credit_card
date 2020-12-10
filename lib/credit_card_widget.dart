@@ -7,6 +7,7 @@ class CreditCardWidget extends StatefulWidget {
     Key key,
     @required this.cardNumber,
     @required this.expiryDate,
+    @required this.cardHolderName,
     @required this.cvvCode,
     @required this.showBackView,
     this.animationDuration = const Duration(milliseconds: 500),
@@ -22,6 +23,7 @@ class CreditCardWidget extends StatefulWidget {
 
   final String cardNumber;
   final String expiryDate;
+  final String cardHolderName;
   final String cvvCode;
   final TextStyle textStyle;
   final Color cardBgColor;
@@ -275,12 +277,26 @@ class _CreditCardWidgetState extends State<CreditCardWidget> with SingleTickerPr
             ),
           ),
           Expanded(
+            flex: 1,
             child: Padding(
               padding: const EdgeInsets.only(left: 16),
               child: Text(
                 widget.expiryDate.isEmpty || widget.expiryDate == null
                     ? widget.localizedText.expiryDateHint
                     : widget.expiryDate,
+                style: widget.textStyle ?? defaultTextStyle,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              child: Text(
+                widget.cardHolderName.isEmpty || widget.cardHolderName == null
+                    ? widget.localizedText.cardHolderLabel.toUpperCase()
+                    : widget.cardHolderName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: widget.textStyle ?? defaultTextStyle,
               ),
             ),
