@@ -22,7 +22,7 @@ class CreditCardWidget extends StatefulWidget {
     this.height,
     this.width,
     this.textStyle,
-    this.cardBgColor = const Color(0xff1b447b),
+    this.cardBgColor = Colors.black45,
     this.localizedText = const LocalizedText(),
   })  : assert(cardNumber != null),
         assert(showBackView != null),
@@ -220,7 +220,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget> with SingleTickerPr
               alignment: Alignment.bottomRight,
               child: Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                child: getCardTypeIcon(widget.cardNumber),
+                child: getCardTypeIcon(detectCCType(widget.cardNumber)),
               ),
             ),
           ),
@@ -270,7 +270,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget> with SingleTickerPr
             alignment: Alignment.topRight,
             child: Padding(
               padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
-              child: getCardTypeIcon(widget.cardNumber),
+              child: getCardTypeIcon(detectCCType(widget.cardNumber)),
             ),
           ),
           Expanded(
@@ -389,27 +389,25 @@ CardType detectCCType(String cardNumber) {
 
 // This method returns the icon for the visa card type if found
 // else will return the empty container
-Widget getCardTypeIcon(String cardNumber) {
+Widget getCardTypeIcon(CardType cardType) {
   Widget icon;
-  switch (detectCCType(cardNumber)) {
+  switch (cardType) {
     case CardType.visa:
       icon = Image.asset(
-        'icons/visa.png',
+        'icons/visa_logo.jpg',
         height: 48,
         width: 48,
         package: 'flutter_credit_card',
       );
       break;
-
     case CardType.mastercard:
       icon = Image.asset(
-        'icons/mastercard.png',
+        'icons/mastercard_logo.png',
         height: 48,
         width: 48,
         package: 'flutter_credit_card',
       );
       break;
-
     default:
       icon = Container(
         height: 48,
