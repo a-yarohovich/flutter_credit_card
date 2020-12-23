@@ -41,7 +41,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
   Color themeColor;
   final MaskedTextController _cardNumberController =
       MaskedTextController(mask: '0000 0000 0000 0000');
-  final TextEditingController _expiryDateController = MaskedTextController(mask: '00/0000');
+  final TextEditingController _expiryDateController = TextEditingController();
   final TextEditingController _cvvCodeController = MaskedTextController(mask: '000');
   final TextEditingController _cardHolderNameController = TextEditingController();
   void Function(CreditCardModel) onCreditCardModelChange;
@@ -155,12 +155,12 @@ class _CreditCardFormState extends State<CreditCardForm> {
                           color: widget.textColor,
                         ),
                         decoration: InputDecoration(
-                          //border: const OutlineInputBorder(),
                           labelText: widget.localizedText.expiryDateLabel,
                           hintText: widget.localizedText.expiryDateHint,
                         ),
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
+                        inputFormatters: [CreditCardExpirationDateFormatter()],
                       ),
                     ),
                   ),
@@ -175,7 +175,6 @@ class _CreditCardFormState extends State<CreditCardForm> {
                           color: widget.textColor,
                         ),
                         decoration: InputDecoration(
-                          //border: const OutlineInputBorder(),
                           labelText: widget.localizedText.cvvLabel,
                           hintText: widget.localizedText.cvvHint,
                         ),
@@ -202,7 +201,6 @@ class _CreditCardFormState extends State<CreditCardForm> {
                   color: widget.textColor,
                 ),
                 decoration: InputDecoration(
-                  //border: const OutlineInputBorder(),
                   labelText: widget.localizedText.cardHolderLabel,
                   hintText: widget.localizedText.cardHolderHint,
                 ),
