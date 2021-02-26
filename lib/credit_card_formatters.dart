@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 final RegExp _digitRegex = RegExp(r'[-0-9]+');
 final RegExp _digitWithPeriodRegex = RegExp(r'[-0-9]+(\.[0-9]+)?');
 
-String toNumericString(String inputString, {bool allowPeriod = false}) {
+String _toNumericString(String inputString, {bool allowPeriod = false}) {
   if (inputString == null) return '';
   var regExp = allowPeriod ? _digitWithPeriodRegex : _digitRegex;
   return inputString.splitMapJoin(regExp, onMatch: (m) => m.group(0), onNonMatch: (nm) => '');
 }
 
-bool isDigit(String character) {
+bool _isDigit(String character) {
   if (character == null || character.isEmpty || character.length > 1) {
     return false;
   }
@@ -19,12 +19,14 @@ bool isDigit(String character) {
 }
 
 class CreditCardExpirationDateFormatter extends MaskedInputFormater {
-  CreditCardExpirationDateFormatter() : super('00/0000');
+  CreditCardExpirationDateFormatter(this.expDateMask) : super(expDateMask);
+
+  final String expDateMask;
 
   @override
   String applyMask(String text) {
     var result = super.applyMask(text);
-    var numericString = toNumericString(result);
+    var numericString = _toNumericString(result);
     String ammendedMonth;
     if (numericString.length > 0) {
       var allDigits = numericString.split('');
@@ -134,7 +136,7 @@ class MaskedInputFormater extends TextInputFormatter {
           break;
         }
       } else if (mask[i] == _onlyDigitMask) {
-        if (isDigit(curChar)) {
+        if (_isDigit(curChar)) {
           result.add(curChar);
           index++;
         } else {
