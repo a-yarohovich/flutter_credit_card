@@ -36,7 +36,7 @@ class CreditCardForm extends StatefulWidget {
 
 const _kExpDateMask = '00/0000';
 const _kCvvCodeMask = '000';
-const _kcardNumberMask = '0000 0000 0000 0000';
+const _kCardNumberMask = '0000 0000 0000 0000';
 
 class _CreditCardFormState extends State<CreditCardForm> {
   String cardNumber;
@@ -45,7 +45,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
   String cvvCode;
   bool isCvvFocused = false;
   Color themeColor;
-  final MaskedTextController _cardNumberController = MaskedTextController(mask: _kcardNumberMask);
+  final MaskedTextController _cardNumberController = MaskedTextController(mask: _kCardNumberMask);
   final TextEditingController _expiryDateController = TextEditingController();
   final TextEditingController _cvvCodeController = MaskedTextController(mask: _kCvvCodeMask);
   final TextEditingController _cardHolderNameController = TextEditingController();
@@ -54,9 +54,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
   void Function(CreditCardModel) onCreditCardModelChange;
   var _formKey = GlobalKey<FormState>();
   static const _kDefaultContainerHeight = 85.0; // Additional size for validation text
-
   CreditCardModel creditCardModel;
-  FocusNode cvvFocusNode = FocusNode();
 
   void createCreditCardModel() {
     cardNumber = widget.cardNumber ?? '';
@@ -91,18 +89,18 @@ class _CreditCardFormState extends State<CreditCardForm> {
       });
     });
 
-    _cardHolderNameController.addListener(() {
-      setState(() {
-        cardHolderName = _cardHolderNameController.text;
-        creditCardModel.cardHolderName = cardHolderName;
-        onCreditCardModelChange(creditCardModel);
-      });
-    });
-
     _cvvCodeController.addListener(() {
       setState(() {
         cvvCode = _cvvCodeController.text;
         creditCardModel.cvvCode = cvvCode;
+        onCreditCardModelChange(creditCardModel);
+      });
+    });
+
+    _cardHolderNameController.addListener(() {
+      setState(() {
+        cardHolderName = _cardHolderNameController.text;
+        creditCardModel.cardHolderName = cardHolderName;
         onCreditCardModelChange(creditCardModel);
       });
     });
@@ -161,44 +159,12 @@ class _CreditCardFormState extends State<CreditCardForm> {
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.next,
           validator: (value) {
-            if (value.length < _kcardNumberMask.length) {
+            if (value.length < _kCardNumberMask.length) {
               return widget.localizedText.cardNumberError;
             }
             return null;
           },
         ));
-  }
-
-  Widget _buildCvv() {
-    return Container(
-      padding: const EdgeInsets.only(left: 8.0),
-      height: _kDefaultContainerHeight,
-      child: TextFormField(
-        focusNode: cvvFocusNode,
-        controller: _cvvCodeController,
-        cursorColor: widget.cursorColor ?? themeColor,
-        style: TextStyle(
-          color: widget.textColor,
-        ),
-        decoration: InputDecoration(
-          labelText: widget.localizedText.cvvLabel,
-          hintText: widget.localizedText.cvvHint,
-        ),
-        keyboardType: TextInputType.number,
-        textInputAction: TextInputAction.done,
-        onChanged: (String text) {
-          setState(() {
-            cvvCode = text;
-          });
-        },
-        validator: (value) {
-          if (value.length < _kCvvCodeMask.length) {
-            return widget.localizedText.cvvErr;
-          }
-          return null;
-        },
-      ),
-    );
   }
 
   Widget _buildExpDate() {
@@ -221,6 +187,37 @@ class _CreditCardFormState extends State<CreditCardForm> {
         validator: (value) {
           if (value.length < _kExpDateMask.length) {
             return widget.localizedText.expiryDateErr;
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _buildCvv() {
+    return Container(
+      padding: const EdgeInsets.only(left: 8.0),
+      height: _kDefaultContainerHeight,
+      child: TextFormField(
+        controller: _cvvCodeController,
+        cursorColor: widget.cursorColor ?? themeColor,
+        style: TextStyle(
+          color: widget.textColor,
+        ),
+        decoration: InputDecoration(
+          labelText: widget.localizedText.cvvLabel,
+          hintText: widget.localizedText.cvvHint,
+        ),
+        keyboardType: TextInputType.number,
+        textInputAction: TextInputAction.done,
+        onChanged: (String text) {
+          setState(() {
+            cvvCode = text;
+          });
+        },
+        validator: (value) {
+          if (value.length < _kCvvCodeMask.length) {
+            return widget.localizedText.cvvErr;
           }
           return null;
         },
