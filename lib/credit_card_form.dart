@@ -58,11 +58,6 @@ class _CreditCardFormState extends State<CreditCardForm> {
   CreditCardModel creditCardModel;
   FocusNode cvvFocusNode = FocusNode();
 
-  void textFieldFocusDidChange() {
-    creditCardModel.isCvvFocused = cvvFocusNode.hasFocus;
-    onCreditCardModelChange(creditCardModel);
-  }
-
   void createCreditCardModel() {
     cardNumber = widget.cardNumber ?? '';
     expiryDate = widget.expiryDate ?? '';
@@ -79,7 +74,6 @@ class _CreditCardFormState extends State<CreditCardForm> {
     _formKey = widget.formKey;
     createCreditCardModel();
     onCreditCardModelChange = widget.onCreditCardModelChange;
-    cvvFocusNode.addListener(textFieldFocusDidChange);
 
     _cardNumberController.addListener(() {
       setState(() {
@@ -129,25 +123,22 @@ class _CreditCardFormState extends State<CreditCardForm> {
       ),
       child: Form(
         key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: <Widget>[
-              _buildCardNumber(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: _buildExpDate(),
-                  ),
-                  Expanded(
-                    child: _buildCvv(),
-                  ),
-                ],
-              ),
-              _buildHolder(),
-            ],
-          ),
+        child: Column(
+          children: <Widget>[
+            _buildCardNumber(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: _buildExpDate(),
+                ),
+                Expanded(
+                  child: _buildCvv(),
+                ),
+              ],
+            ),
+            _buildHolder(),
+          ],
         ),
       ),
     );
@@ -155,27 +146,27 @@ class _CreditCardFormState extends State<CreditCardForm> {
 
   Widget _buildCardNumber() {
     return Container(
-      height: _kDefaultContainerHeight,
-      child: TextFormField(
-        controller: _cardNumberController,
-        cursorColor: widget.cursorColor ?? themeColor,
-        style: TextStyle(
-          color: widget.textColor,
-        ),
-        decoration: InputDecoration(
-          labelText: widget.localizedText.cardNumberLabel,
-          hintText: widget.localizedText.cardNumberHint,
-        ),
-        keyboardType: TextInputType.number,
-        textInputAction: TextInputAction.next,
-        validator: (value) {
-          if (value.length < _kcardNumberMask.length) {
-            return widget.localizedText.cardNumberError;
-          }
-          return null;
-        },
-      ),
-    );
+        height: _kDefaultContainerHeight,
+        child: TextFormField(
+          controller: _cardNumberController,
+          cursorColor: widget.cursorColor ?? themeColor,
+          style: TextStyle(
+            color: widget.textColor,
+          ),
+          decoration: InputDecoration(
+            labelText: widget.localizedText.cardNumberLabel,
+            hintText: widget.localizedText.cardNumberHint,
+            suffixIcon: getCardTypeIcon(detectCCType(cardNumber)),
+          ),
+          keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.next,
+          validator: (value) {
+            if (value.length < _kcardNumberMask.length) {
+              return widget.localizedText.cardNumberError;
+            }
+            return null;
+          },
+        ));
   }
 
   Widget _buildCvv() {
