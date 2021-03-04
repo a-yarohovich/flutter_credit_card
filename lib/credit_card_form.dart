@@ -114,6 +114,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
 
   @override
   Widget build(BuildContext context) {
+    final node = FocusScope.of(context);
     return Theme(
       data: ThemeData(
         primaryColor: themeColor.withOpacity(0.8),
@@ -123,129 +124,123 @@ class _CreditCardFormState extends State<CreditCardForm> {
         key: _formKey,
         child: Column(
           children: <Widget>[
-            _buildCardNumber(),
+            Container(
+              height: _kDefaultContainerHeight,
+              child: TextFormField(
+                autofocus: true,
+                controller: _cardNumberController,
+                cursorColor: widget.cursorColor ?? themeColor,
+                style: TextStyle(
+                  color: widget.textColor,
+                ),
+                decoration: InputDecoration(
+                  labelText: widget.localizedText.cardNumberLabel,
+                  hintText: widget.localizedText.cardNumberHint,
+                  suffixIcon: getCardTypeIcon(detectCCType(cardNumber)),
+                ),
+                keyboardType: TextInputType.number,
+                onChanged: (val) {
+                  if (val.length == _kCardNumberMask.length) {
+                    node.nextFocus();
+                  }
+                },
+                validator: (value) {
+                  if (value.length < _kCardNumberMask.length) {
+                    return widget.localizedText.cardNumberError;
+                  }
+                  return null;
+                },
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: _buildExpDate(),
+                  child: Container(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    height: _kDefaultContainerHeight,
+                    child: TextFormField(
+                      controller: _expiryDateController,
+                      cursorColor: widget.cursorColor ?? themeColor,
+                      style: TextStyle(
+                        color: widget.textColor,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: widget.localizedText.expiryDateLabel,
+                        hintText: widget.localizedText.expiryDateHint,
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [_expDateFormatter],
+                      onChanged: (val) {
+                        if (val.length == _kExpDateMask.length) {
+                          node.nextFocus();
+                        }
+                      },
+                      validator: (value) {
+                        if (value.length < _kExpDateMask.length) {
+                          return widget.localizedText.expiryDateErr;
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                 ),
                 Expanded(
-                  child: _buildCvv(),
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    height: _kDefaultContainerHeight,
+                    child: TextFormField(
+                      controller: _cvvCodeController,
+                      cursorColor: widget.cursorColor ?? themeColor,
+                      style: TextStyle(
+                        color: widget.textColor,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: widget.localizedText.cvvLabel,
+                        hintText: widget.localizedText.cvvHint,
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (val) {
+                        if (val.length == _kCvvCodeMask.length) {
+                          node.nextFocus();
+                        }
+                      },
+                      validator: (value) {
+                        if (value.length < _kCvvCodeMask.length) {
+                          return widget.localizedText.cvvErr;
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),
-            _buildHolder(),
+            Container(
+              padding: const EdgeInsets.only(top: 0),
+              child: TextFormField(
+                controller: _cardHolderNameController,
+                cursorColor: widget.cursorColor ?? themeColor,
+                style: TextStyle(
+                  color: widget.textColor,
+                ),
+                decoration: InputDecoration(
+                  labelText: widget.localizedText.cardHolderLabel,
+                  hintText: widget.localizedText.cardHolderHint,
+                ),
+                keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.characters,
+                textInputAction: TextInputAction.done,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return widget.localizedText.cardHolderErr;
+                  }
+                  return null;
+                },
+              ),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildCardNumber() {
-    return Container(
-        height: _kDefaultContainerHeight,
-        child: TextFormField(
-          controller: _cardNumberController,
-          cursorColor: widget.cursorColor ?? themeColor,
-          style: TextStyle(
-            color: widget.textColor,
-          ),
-          decoration: InputDecoration(
-            labelText: widget.localizedText.cardNumberLabel,
-            hintText: widget.localizedText.cardNumberHint,
-            suffixIcon: getCardTypeIcon(detectCCType(cardNumber)),
-          ),
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.next,
-          validator: (value) {
-            if (value.length < _kCardNumberMask.length) {
-              return widget.localizedText.cardNumberError;
-            }
-            return null;
-          },
-        ));
-  }
-
-  Widget _buildExpDate() {
-    return Container(
-      padding: const EdgeInsets.only(right: 8.0),
-      height: _kDefaultContainerHeight,
-      child: TextFormField(
-        controller: _expiryDateController,
-        cursorColor: widget.cursorColor ?? themeColor,
-        style: TextStyle(
-          color: widget.textColor,
-        ),
-        decoration: InputDecoration(
-          labelText: widget.localizedText.expiryDateLabel,
-          hintText: widget.localizedText.expiryDateHint,
-        ),
-        keyboardType: TextInputType.number,
-        textInputAction: TextInputAction.next,
-        inputFormatters: [_expDateFormatter],
-        validator: (value) {
-          if (value.length < _kExpDateMask.length) {
-            return widget.localizedText.expiryDateErr;
-          }
-          return null;
-        },
-      ),
-    );
-  }
-
-  Widget _buildCvv() {
-    return Container(
-      padding: const EdgeInsets.only(left: 8.0),
-      height: _kDefaultContainerHeight,
-      child: TextFormField(
-        controller: _cvvCodeController,
-        cursorColor: widget.cursorColor ?? themeColor,
-        style: TextStyle(
-          color: widget.textColor,
-        ),
-        decoration: InputDecoration(
-          labelText: widget.localizedText.cvvLabel,
-          hintText: widget.localizedText.cvvHint,
-        ),
-        keyboardType: TextInputType.number,
-        textInputAction: TextInputAction.done,
-        onChanged: (String text) {
-          setState(() {
-            cvvCode = text;
-          });
-        },
-        validator: (value) {
-          if (value.length < _kCvvCodeMask.length) {
-            return widget.localizedText.cvvErr;
-          }
-          return null;
-        },
-      ),
-    );
-  }
-
-  Container _buildHolder() {
-    return Container(
-      padding: const EdgeInsets.only(top: 0),
-      child: TextFormField(
-        controller: _cardHolderNameController,
-        cursorColor: widget.cursorColor ?? themeColor,
-        style: TextStyle(
-          color: widget.textColor,
-        ),
-        decoration: InputDecoration(
-          labelText: widget.localizedText.cardHolderLabel,
-          hintText: widget.localizedText.cardHolderHint,
-        ),
-        keyboardType: TextInputType.text,
-        textInputAction: TextInputAction.next,
-        validator: (value) {
-          if (value.isEmpty) {
-            return widget.localizedText.cardHolderErr;
-          }
-          return null;
-        },
       ),
     );
   }
